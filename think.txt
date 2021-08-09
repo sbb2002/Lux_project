@@ -1,0 +1,147 @@
+::2021-07-20 Tue
+게임 상에서 통계에 있는 것이 세세하게 모두 기록되어져 있다.
+어떤 것 아이디 순으로, timeline은 시간 순으로 기록된 듯 하다.
+이것의 구조를 이해하고서 다른 게임의 데이터도 전처리할 수 있겠다.
+파이썬 내에서 불러오니 정상적으로 로딩되지만 매우 더럽게 길다.
+웹페이지에서 불러와 메모장에 복사하여 구조를 이해해보자.
+
+::2021-07-23 Fri
+json.dump()를 이용하여 경기내역의 구조를 저장할 수 있게 되었다.
+나름의 규칙성이 보인다. 매우 길지만 금방 해석할 수 있을 듯 하다.
+
+::2021-08-05 Thr
+timeline.json이 이상하다 싶었는데, 1.py에서 실수를 수정했더니 잘 나왔다.
+이제 해야할 일은...
+    1) 필요한 데이터 적재
+    2) 적당한 모델 선정(RNN, LSTM, ...)
+    3) 평가
+    4) 포트폴리오의 밑거름!
+여턴 시계열 데이터이니 RNN을 알아봐야 할 것 같다. 
+또한 데이터 적재할 때, 시계열(timestamp, events)을 x축(기준)으로 
+다른 features를 나열한다. 
+여기서 유저이름이나 기타 필요한 데이터는 
+matches.json에서 따오면 될 듯 하다. 
+아래 timeline.json의 개괄적 예시를 적어놨다.
+
+    (...)
+    "events": [
+                        {
+                            "realTimestamp": 1628159726855,
+                            "timestamp": 0,
+                            "type": "PAUSE_END"
+                        },
+                        {
+                            "creatorId": 0,
+                            "timestamp": 0,     <-- 처음 시작 시, 10명의 정보인듯... 
+                            "type": "WARD_PLACED",
+                            "wardType": "UNDEFINED"
+                        }
+                    ],
+                    "participantFrames": {
+                        "1": {      <--- 유저를 의미하는 듯. matches.json에서 참고해오자. 
+                            "championStats": {
+                                "abilityHaste": 0,
+                                "abilityPower": 0,
+                                "armor": 34,
+                                "armorPen": 0,
+                                "armorPenPercent": 0,
+                                "attackDamage": 25,
+                                "attackSpeed": 100,
+                                "bonusArmorPenPercent": 0,
+                                "bonusMagicPenPercent": 0,
+                                "ccReduction": 0,
+                                "cooldownReduction": 0,
+                                "health": 540,
+                                "healthMax": 540,
+                                "healthRegen": 0,
+                                "lifesteal": 0,
+                                "magicPen": 0,
+                                "magicPenPercent": 0,
+                                "magicResist": 32,
+                                "movementSpeed": 340,
+                                "omnivamp": 0,
+                                "physicalVamp": 0,
+                                "power": 400,
+                                "powerMax": 400,
+                                "powerRegen": 0,
+                                "spellVamp": 0
+                            },
+                            "currentGold": 500,
+                            "damageStats": {
+                                "magicDamageDone": 0,
+                                "magicDamageDoneToChampions": 0,
+                                "magicDamageTaken": 0,
+                                "physicalDamageDone": 0,
+                                "physicalDamageDoneToChampions": 0,
+                                "physicalDamageTaken": 0,
+                                "totalDamageDone": 0,
+                                "totalDamageDoneToChampions": 0,
+                                "totalDamageTaken": 0,
+                                "trueDamageDone": 0,
+                                "trueDamageDoneToChampions": 0,
+                                "trueDamageTaken": 0
+                            },
+                            "goldPerSecond": 0,
+                            "jungleMinionsKilled": 0,
+                            "level": 1,
+                            "minionsKilled": 0,
+                            "participantId": 1,
+                            "position": {
+                                "x": 554,
+                                "y": 581
+                            },
+                            "timeEnemySpentControlled": 0,
+                            "totalGold": 500,
+                            "xp": 0
+                        },
+                        "2": {
+                            "championStats": {...},
+                        "3": {
+                            "championStats": {...},
+
+                        (...),
+
+                        "10": {
+                            "championStats": {...},
+                    "timestamp": 0
+                },
+            (...)
+
+::2021-08-07 Sat 
+docker에 연결해서 어디서든지 작업할 수 있도록 해보았다. 
+거기에 api에서 끌어온 데이터를 실제로 써먹기 위해 저장 및 정리했다. 
+timeline만 잘 활용하면 될 듯하다. 이 안에 puuid로 몇번자리인지, 포지션은 무엇인지,
+자세하게 나와있다. time은 ms단위로 쓰였고 10분 단위로 기록되었다. 
+ctrl+f 로 events로 찾으면 10분 단위로 나온다. 
+events와 participantFrames는 10분 한 뭉탱이로 취급해야한다.
+
+::2021-08-08 Sun
+본격적으로 데이터 수집하기 전에 무엇이 가장 인과관계가 있는 features인가 고민했다. 
+사실 p-val.을 보고서 결정할 일이지만... 지금은 이것을 만드는 주요목적이 포트폴리오이기에 너무 어렵지 않도록 하려고 한다.
+timeline을 따라 보는 것도 좋을 거 같다만, 지금은 overall dataset을 이용해보자. 왠지 이것만해도 충분할 것 같다.
+overall dataset에서 팀을 가르는 key는 teamId이고, value는 (100, 200)이다.
+이것으로 피아식별을 할 수 있다.
+
+밤. overall data를 적절히 csv로 잘 추려내었다!
+그래도 아직 raw data가 확장자만 바뀌었을 뿐이다.
+이제 각 csv파일의 column을 손봐줄 차례다. col의 순서, TMI 등등 말이다.
+머신러닝을 위한 전처리를 거치기 전에 어떤 feature가 X가 될지, Y가 될지
+생각해보자.
+Y는 당연히 내 아이디가 승리한 여부겠고, 그럼 피아(나 포함)의 stats가 X가 될 것이다.
+하지만 X가 지나치게 많은 것 아닌가 걱정이 되기 시작한다.
+p-val. 검증 후 잘 추려내고, champ나 puuid 같은건 참고용으로 A-col에 배치하되 학습에 안쓰도록 하자.
+그러려면 raw csv를 한번 과감하게 더 새 파일로 가공해놔야겠다.
+아래와 같이 한 경기 당 한 줄로 출력되게끔 말이다.
+
+| X1 | X2 | ... | X10 | Y |
+|P1_stat|P2_stat|...|P10_stat|win| == match 1
+|P1_stat|P2_stat|...|P10_stat|win| == match 2
+|P1_stat|P2_stat|...|P10_stat|win| == match 3
+|P1_stat|P2_stat|...|P10_stat|win| == match 4
+|P1_stat|P2_stat|...|P10_stat|win| == match 5
+...
+
+stat 안에서도 gold나 exp, dmg_dealt와 같이 세세한 내용이 있으므로,
+gold-win, exp-win, dmg-win 식으로 따로따로 상관관계를 보아야할 것 같다.
+슬슬 피곤하다. 오늘은 여기까지.
+참, csv파일의 keys은 csv폴더 내의 readme.md를 참고할 것.
