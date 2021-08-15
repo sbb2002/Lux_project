@@ -25,7 +25,7 @@
 24	<class 'int'>	goldSpent
 25	<class 'str'>	individualPosition
 26	<class 'int'>	inhibitorKills
-27	<class 'int'>	inhibitorTakedowns
+27	<class 'int'>	inhibitorTakedowns                              X
 28	<class 'int'>	inhibitorsLost
 29	<class 'int'>	item0
 30	<class 'int'>	item1
@@ -48,7 +48,7 @@
 47	<class 'int'>	neutralMinionsKilled
 48	<class 'int'>	nexusKills
 49	<class 'int'>	nexusLost
-50	<class 'int'>	nexusTakedowns
+50	<class 'int'>	nexusTakedowns                                  X
 51	<class 'int'>	objectivesStolen
 52	<class 'int'>	objectivesStolenAssists
 53	<class 'int'>	participantId
@@ -95,7 +95,7 @@
 94	<class 'int'>	trueDamageDealtToChampions
 95	<class 'int'>	trueDamageTaken
 96	<class 'int'>	turretKills
-97	<class 'int'>	turretTakedowns
+97	<class 'int'>	turretTakedowns                                 X
 98	<class 'int'>	turretsLost
 99	<class 'int'>	unrealKills
 100	<class 'int'>	visionScore
@@ -103,3 +103,10 @@
 102	<class 'int'>	wardsKilled
 103	<class 'int'>	wardsPlaced
 104	<class 'bool'>	win
+
+## unusable key
+27	<class 'int'>	inhibitorTakedowns
+50	<class 'int'>	nexusTakedowns
+97	<class 'int'>	turretTakedowns
+
+## Total usable: 102 / 105
