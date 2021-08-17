@@ -1,11 +1,10 @@
 import requests
 import json
-import pandas as pd
 import os, time
   
 # params
 summoner_id = "고츄장떡"
-api_key = 'RGAPI-0ca59a18-e5b7-4470-b65e-59bb8feda125'
+api_key = 'RGAPI-ca09dd28-4ab4-4ce3-a71a-81d905dd22f5'
 
 # api url
 api_url = "https://kr.api.riotgames.com"
@@ -29,12 +28,17 @@ print("It takes a few seconds......\n")
 for i in range(len(match_r.json())):
     overall_url = api_asia_url + "/lol/match/v5/matches/" + match_r.json()[i] + "?api_key=" + api_key
     overall_r = requests.get(overall_url)
-    with open(f'./data/overall/{match_r.json()[i]}.json', "w") as f:
-        json.dump(overall_r.json(), f, indent=4)
     timeline_url = api_asia_url + "/lol/match/v5/matches/" + match_r.json()[i] + "/timeline" + "?api_key=" + api_key
     timeline_r = requests.get(timeline_url)
-    with open(f'./data/timeline/{match_r.json()[i]}_timeline.json', "w") as f:
-        json.dump(timeline_r.json(), f, indent=4)
+    gamemode = overall_r.json().get('info').get('gameMode')
+    if os.path.exists(f'./data/gameMode/{gamemode}') == False:
+        os.mkdir(f'./data/gameMode/{gamemode}')
+        os.mkdir(f'./data/gameMode/{gamemode}/overall')
+        os.mkdir(f'./data/gameMode/{gamemode}/timeline')
+    with open(f'./data/gameMode/{gamemode}/overall/{match_r.json()[i]}.json', "w") as f:
+        json.dump(overall_r.json(), f, indent=4, ensure_ascii=False)    
+    with open(f'./data/gameMode/{gamemode}/timeline/{match_r.json()[i]}_timeline.json', "w") as f:
+        json.dump(timeline_r.json(), f, indent=4, ensure_ascii=False)
     time.sleep(1)
 
 # report
