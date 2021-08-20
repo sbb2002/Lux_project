@@ -1,5 +1,6 @@
 class rearrange:
     global match
+    global myid
 
     def stats(self, match):
         md_list = []
@@ -133,6 +134,10 @@ class rearrange:
                     visionScore, visionWardsBoughtInGame,
                     wardsKilled, wardsPlaced, win
                     ]
+
+            
             md_list.append(match_data)
+
+                
 
         return md_list
