@@ -41,12 +41,19 @@ with open('data/gameMode/CLASSIC/overall/game_record.csv', 'w', encoding='utf-8'
     arc_200 = [f'200ARC_{key}' for key in keys]
     util_200 = [f'200UTIL_{key}' for key in keys]
 
-    match_key = ["matchId", "gameMode", *me_100, *top_100, *jun_100, *mid_100, *arc_100, *util_100, *top_200, *jun_200, *mid_200, *arc_200, *util_200]
+    match_key = ["matchId", "gameMode", "gameDuration", *me_100, *top_100, *jun_100, *mid_100, *arc_100, *util_100, *top_200, *jun_200, *mid_200, *arc_200, *util_200]
     w.writerow(match_key)
 
+    earlySurr = 0
     # values
     for i in range(len(filename)):
         match = read_json(filename[i])
+
+        if match['info']['participants'][0]['gameEndedInEarlySurrender'] == True:
+            print(f":: {filename[i]} was early surrendered. It will be not recorded.")
+            earlySurr += 1
+            continue
+
         # match_data = lib_rearrange.rearrange().stats(match)
         p1, p2, p3, p4, p5, p6, p7, p8, p9, p10 = lib_rearrange.rearrange().stats(match)
         
@@ -71,13 +78,14 @@ with open('data/gameMode/CLASSIC/overall/game_record.csv', 'w', encoding='utf-8'
         if p10[74] == myid:
             myData = p10
 
+        gameDuration = match['info']['gameDuration'] / 1000
 
         matchid = match['metadata']['matchId']
         mode = match['info']['gameMode']
-        w.writerow([matchid, mode, *myData, *p1, *p2, *p3, *p4, *p5, *p6, *p7, *p8, *p9, *p10])
+        w.writerow([matchid, mode, gameDuration, *myData, *p1, *p2, *p3, *p4, *p5, *p6, *p7, *p8, *p9, *p10])
         print(f"{filename[i]} is recorded...")
     
     print("\n####################################################\n")
-    print(f"Recording is completed!!\nTotal: {len(filelist)} files\nType: {match['info']['gameMode']}")
+    print(f"Recording is completed!!\nTotal: {len(filelist)} files\nEarly surrendered: {earlySurr}\nRecord: {len(filelist)-earlySurr}\nType: {match['info']['gameMode']}")
     print("\n####################################################\n")
 
