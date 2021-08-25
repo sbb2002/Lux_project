@@ -27,7 +27,7 @@ with open('data/gameMode/CLASSIC/overall/game_record.csv', 'w', encoding='utf-8'
     keys = read_json(filename[0])['info']['participants'][0].keys()
     keys = [key for key in keys]
 
-    me_100 = [f'ME_{key}' for key in keys]
+    me_100 = [f'{key}' for key in keys]
 
     top_100 = [f'100TOP_{key}' for key in keys]
     jun_100 = [f'100JUN_{key}' for key in keys]

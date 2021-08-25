@@ -4,7 +4,7 @@ import os, time
   
 # params
 summoner_id = "고츄장떡"
-api_key = 'RGAPI-ca09dd28-4ab4-4ce3-a71a-81d905dd22f5'
+api_key = 'RGAPI-9e41f60e-e921-4601-b470-766fef9aee7d'
 
 # api url
 api_url = "https://kr.api.riotgames.com"
@@ -25,6 +25,7 @@ match_r = requests.get(match_url)
 print("It takes a few seconds......\n")
 
 # get match data overall and timeline
+count = 0
 for i in range(len(match_r.json())):
     overall_url = api_asia_url + "/lol/match/v5/matches/" + match_r.json()[i] + "?api_key=" + api_key
     overall_r = requests.get(overall_url)
@@ -40,8 +41,9 @@ for i in range(len(match_r.json())):
     with open(f'./data/gameMode/{gamemode}/timeline/{match_r.json()[i]}_timeline.json', "w") as f:
         json.dump(timeline_r.json(), f, indent=4, ensure_ascii=False)
     time.sleep(1)
+    count += 1
 
 # report
 print(f"{len(match_r.json())} data were updated.")
-print(f"There are {len(os.listdir('data/overall'))} files.")
+print(f"There are {count} files.")
 print("Data saving is finished!!!\n")
