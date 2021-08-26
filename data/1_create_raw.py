@@ -45,5 +45,5 @@ for i in range(len(match_r.json())):
 
 # report
 print(f"{len(match_r.json())} data were updated.")
-print(f"There are {count} files.")
+print(f"{count} files added.")
 print("Data saving is finished!!!\n")
