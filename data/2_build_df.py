@@ -86,6 +86,6 @@ with open('data/gameMode/CLASSIC/overall/game_record.csv', 'w', encoding='utf-8'
         print(f"{filename[i]} is recorded...")
     
     print("\n####################################################\n")
-    print(f"Recording is completed!!\nTotal: {len(filelist)} files\nEarly surrendered: {earlySurr}\nRecord: {len(filelist)-earlySurr}\nType: {match['info']['gameMode']}")
+    print(f"Recording is completed!!\nTotal: {len(filelist)-1} files\nEarly surrendered: {earlySurr}\nRecord: {len(filelist)-earlySurr-1}\nType: {match['info']['gameMode']}")
     print("\n####################################################\n")
 

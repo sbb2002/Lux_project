@@ -4,7 +4,7 @@ import os, time
   
 # params
 summoner_id = "고츄장떡"
-api_key = 'RGAPI-9e41f60e-e921-4601-b470-766fef9aee7d'
+api_key = 'RGAPI-8eeadb19-8b00-4e20-bc8d-8961a400f8ff'
 
 # api url
 api_url = "https://kr.api.riotgames.com"
@@ -19,9 +19,10 @@ league_url = api_url + "/lol/league/v4/entries/by-summoner/" + summoner_r.json()
 league_r = requests.get(league_url)
 
 # get matchid
-match_url = api_asia_url + "/lol/match/v5/matches/by-puuid/" + summoner_r.json()['puuid'] + "/ids" + "?api_key=" + api_key + "&start=0&count=24"
+match_url = api_asia_url + "/lol/match/v5/matches/by-puuid/" + summoner_r.json()['puuid'] + "/ids" + "?api_key=" + api_key + "&type=ranked&start=0&count=24"
 match_r = requests.get(match_url)
 
+print(match_r.json())
 print("It takes a few seconds......\n")
 
 # get match data overall and timeline
@@ -42,8 +43,8 @@ for i in range(len(match_r.json())):
         json.dump(timeline_r.json(), f, indent=4, ensure_ascii=False)
     time.sleep(1)
     count += 1
+    print(f"{match_r.json()[i]} data were updated.")
 
 # report
-print(f"{len(match_r.json())} data were updated.")
 print(f"{count} files added.")
 print("Data saving is finished!!!\n")
