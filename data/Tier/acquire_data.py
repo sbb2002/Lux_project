@@ -1,6 +1,6 @@
 import pickle
 import requests
-import os, json, time, logging
+import os, json, time, logging, datetime
 
 api_key = "RGAPI-8d4f5e12-ac96-4375-b10e-48ba60b756af"
 
@@ -87,11 +87,14 @@ def get_data(dict_match):
         os.mkdir(f'data/Tier/{tier}/{division}/timeline')
         print("[timeline] directory is created.")
 
+    logger.info(f'[{datetime.datetime.now()}] {tier}-{division} is recording.')
     print(f"***************************************************\nData acquiring is starting.\nTier:\t{tier} {division}\nTotal:\t{number+1}\n\nProgress:")
 
     i = 0
     while i <= number:
         try:
+            retry_token = 3
+
             # call data
             overall = f"https://asia.api.riotgames.com/lol/match/v5/matches/{matchId[i]}"
             timeline = f"https://asia.api.riotgames.com/lol/match/v5/matches/{matchId[i]}/timeline"
@@ -113,25 +116,30 @@ def get_data(dict_match):
         except Exception:
 
             # response check
+            # 4XX;  400=bad request, 401=unauthorized, 403=forbidden, 404=not found, 415=unsupported media type, 429=rate limit exceeded
+            # 5XX;  500=internal error, 503=service unavailable
             if overall_r.status_code == 429 or timeline_r == 429:
-                logger.info(f'[Errno. 429] {tier} {division} - {i} / {number+1}, Too busy')
+                logger.info(f'[{datetime.datetime.now()}]\t{tier}-{division}\t{i}/{number+1}\tErrno.429, Too busy')
                 time.sleep(120)
                 continue
 
             elif overall_r.status_code == 404 or timeline_r == 404:
                 i += 1
-                logger.info(f'[Errno. 404] {tier} {division} - {i} / {number+1}, Not found')
+                logger.info(f'[{datetime.datetime.now()}]\t{tier}-{division}\t{i}/{number+1}\tErrno.404, Not found')
                 continue
 
             elif overall_r.status_code == 503 or timeline_r == 503:
-                logger.info(f'[Errno. 503] {tier} {division} - {i} / {number+1}, Service unavailable')
+                retry_token -= 1
+                logger.info(f'[{datetime.datetime.now()}]\t{tier}-{division}\t{i}/{number+1}\tErrno.503, Service unavailable. Retry: {retry_token}')
+                if retry_token == 0:
+                    i += 1
                 continue
 
             else:
-                logger.info(f'[Errno. {overall_r.status_code}] {tier} {division} - {i} / {number+1}, Critical error')
+                logger.info(f'[{datetime.datetime.now()}]\t{tier}-{division}\t{i}/{number+1}\tErrno.{overall_r.status_code}, Critical error!')
                 break
     
-    print(f"{tier} {division} data acquiring is finished.\n")
+    print(f"{tier}-{division} data acquiring is finished.\n")
 
 
 
