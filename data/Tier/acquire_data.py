@@ -91,10 +91,9 @@ def get_data(dict_match):
     print(f"***************************************************\nData acquiring is starting.\nTier:\t{tier} {division}\nTotal:\t{number+1}\n\nProgress:")
 
     i = 0
+    retry_token = 3
     while i <= number:
         try:
-            retry_token = 3
-
             # call data
             overall = f"https://asia.api.riotgames.com/lol/match/v5/matches/{matchId[i]}"
             timeline = f"https://asia.api.riotgames.com/lol/match/v5/matches/{matchId[i]}/timeline"
@@ -133,6 +132,7 @@ def get_data(dict_match):
                 logger.info(f'[{datetime.datetime.now()}]\t{tier}-{division}\t{i}/{number+1}\tErrno.503, Service unavailable. Retry: {retry_token}')
                 if retry_token == 0:
                     i += 1
+                    retry_token = 3
                 continue
 
             else:
