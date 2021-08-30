@@ -104,9 +104,9 @@ def get_data(dict_match):
                 raise Exception 
 
             # save data
-            with open(f'data/Tier/{tier}/{division}/{matchId[i]}.json', 'w') as f:
+            with open(f'data/Tier/{tier}/{division}/overall/{matchId[i]}.json', 'w') as f:
                 json.dump(overall_r.json(), f, indent=4, ensure_ascii=False)
-            with open(f'data/Tier/{tier}/{division}/{matchId[i]}_timeline.json', 'w') as f:
+            with open(f'data/Tier/{tier}/{division}/timeline/{matchId[i]}_timeline.json', 'w') as f:
                 json.dump(timeline_r.json(), f, indent=4, ensure_ascii=False)
 
             i += 1
