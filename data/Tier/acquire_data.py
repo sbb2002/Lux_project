@@ -1,8 +1,8 @@
 import pickle
 import requests
-import os, json, time, logging, datetime
+import os, json, time, logging, datetime, glob
 
-api_key = "RGAPI-8d4f5e12-ac96-4375-b10e-48ba60b756af"
+api_key = "RGAPI-b3be4c11-0a8d-42f9-a955-7c0625641f3c"
 
 request_header = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36",
@@ -18,7 +18,7 @@ logging.basicConfig(
     level=logging.INFO,
 )
 logger = logging.getLogger()
-file_handler = logging.FileHandler(f'data/Tier/debug.log')
+file_handler = logging.FileHandler(f'data/Tier/report.log')
 logger.addHandler(file_handler)
 
 # DIAMOND
@@ -79,6 +79,9 @@ def get_data(dict_match):
     matchId = dict_match['matchId']
     number = len(dict_match['matchId'])
 
+    # continue
+    existFileCount = len(glob(f'data/Tier/{tier}/{division}/overall/*.json'))
+
     # mkdir
     if os.path.exists(f'data/Tier/{tier}/{division}/overall') == False:
         os.mkdir(f'data/Tier/{tier}/{division}/overall')
@@ -87,12 +90,16 @@ def get_data(dict_match):
         os.mkdir(f'data/Tier/{tier}/{division}/timeline')
         print("[timeline] directory is created.")
 
-    logger.info(f'[{datetime.datetime.now()}] {tier}-{division} is recording.')
-    print(f"***************************************************\nData acquiring is starting.\nTier:\t{tier} {division}\nTotal:\t{number+1}\n\nProgress:")
+    logger.info(f'[{datetime.datetime.now()}] Start: {tier}-{division}')
+    print(f"***************************************************\nData acquiring is starting.\nTier:\t{tier} {division}\nTotal:\t{number}\n\nProgress:")
 
-    i = 0
-    retry_token = 3
-    while i <= number:
+    i = 0       # number for while
+    if existFileCount != 0:
+        i = existFileCount - 1
+        logger.info(f'[{datetime.datetime.now()}] {tier}-{division}\t{i+1}/{number} Continue.')
+    retry_token = 3     # Retry-able code confrontation
+
+    while i < number:
         try:
             # call data
             overall = f"https://asia.api.riotgames.com/lol/match/v5/matches/{matchId[i]}"
@@ -108,46 +115,57 @@ def get_data(dict_match):
                 json.dump(overall_r.json(), f, indent=4, ensure_ascii=False)
             with open(f'data/Tier/{tier}/{division}/timeline/{matchId[i]}_timeline.json', 'w') as f:
                 json.dump(timeline_r.json(), f, indent=4, ensure_ascii=False)
-
+            
+            print(f"{i+1} / {number}")
             i += 1
-            print(f"{i} / {number+1}")
+            retry_token = 3
 
         except Exception:
-
             # response check
             # 4XX;  400=bad request, 401=unauthorized, 403=forbidden, 404=not found, 415=unsupported media type, 429=rate limit exceeded
             # 5XX;  500=internal error, 503=service unavailable
             if overall_r.status_code == 429 or timeline_r == 429:
-                logger.info(f'[{datetime.datetime.now()}]\t{tier}-{division}\t{i}/{number+1}\tErrno.429, Too busy')
+                logger.info(f'[{datetime.datetime.now()}] {tier}-{division}\t{i+1}/{number}\tErrno.429\tToo busy')
                 time.sleep(120)
                 continue
 
             elif overall_r.status_code == 404 or timeline_r == 404:
+                logger.info(f'[{datetime.datetime.now()}] {tier}-{division}\t{i+1}/{number}\tErrno.404\tNot found')
                 i += 1
-                logger.info(f'[{datetime.datetime.now()}]\t{tier}-{division}\t{i}/{number+1}\tErrno.404, Not found')
                 continue
 
             elif overall_r.status_code == 503 or timeline_r == 503:
+                logger.info(f'[{datetime.datetime.now()}] {tier}-{division}\t{i+1}/{number}\tErrno.503\tService unavailable. But continue. Retry: {retry_token}')
                 retry_token -= 1
-                logger.info(f'[{datetime.datetime.now()}]\t{tier}-{division}\t{i}/{number+1}\tErrno.503, Service unavailable. Retry: {retry_token}')
                 if retry_token == 0:
+                    logger.info(f'[{datetime.datetime.now()}] {tier}-{division}\t{i+1}/{number}\tErrno.503\tService unavailable. Pass! Retry: {retry_token}')
                     i += 1
                     retry_token = 3
-                continue
+                    continue
 
             else:
-                logger.info(f'[{datetime.datetime.now()}]\t{tier}-{division}\t{i}/{number+1}\tErrno.{overall_r.status_code}, Critical error!')
-                break
-    
-    print(f"{tier}-{division} data acquiring is finished.\n")
+                if overall_r.status_code == 200 or timeline_r == 200:
+                    logger.info(f'[{datetime.datetime.now()}] {tier}-{division}\t{i+1}/{number}\tErrno.200\tUnknown error. But continue. Retry: {retry_token}')
+                    retry_token -= 1
+                    if retry_token == 0:
+                        logger.info(f'[{datetime.datetime.now()}] {tier}-{division}\t{i+1}/{number}\tErrno.200\tUnknown error. Pass! Retry: {retry_token}')
+                        i += 1
+                        retry_token = 3
+                        continue
+                else:
+                    logger.info(f'[{datetime.datetime.now()}] {tier}-{division}\t{i+1}/{number}\tErrno.{overall_r.status_code}\tCritical error. Break!')
+                    break
+    time.sleep(3)
 
+    recFileCount = len(glob(f'data/Tier/{tier}/{division}/overall/*.json'))
+    logger.info(f'[{datetime.datetime.now()}] End: {tier}-{division}\t{recFileCount} matches are written successfully.')
 
 
 #################################################################
-tier1 = [D1, P1, G1, S1, B1]
-tier2 = [D2, P2, G2, S2, B2]
-tier3 = [D3, P3, G3, S3, B3]
-tier4 = [D4, P4, G4, S4, B4]
+tier1 = [G1, S1, B1]
+tier2 = [G2, S2, B2]
+tier3 = [G3, S3, B3]
+tier4 = [G4, S4, B4]
 
 for i in range(4):
     get_data(tier1[i])
