@@ -1,6 +1,7 @@
 import pickle
 import requests
-import os, json, time, logging, datetime, glob
+import os, json, time, logging, datetime
+from glob import glob
 
 api_key = "RGAPI-b3be4c11-0a8d-42f9-a955-7c0625641f3c"
 
@@ -162,7 +163,7 @@ def get_data(dict_match):
 
 
 #################################################################
-tier1 = [G1, S1, B1]
+tier1 = [G1, S1, B1]        # G1 log
 tier2 = [G2, S2, B2]
 tier3 = [G3, S3, B3]
 tier4 = [G4, S4, B4]
