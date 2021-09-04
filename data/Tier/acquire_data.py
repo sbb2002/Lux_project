@@ -3,7 +3,7 @@ import requests
 import os, json, time, logging, datetime
 from glob import glob
 
-api_key = "RGAPI-b3be4c11-0a8d-42f9-a955-7c0625641f3c"
+api_key = "RGAPI-c05799b8-e0a5-477b-a1e4-6a8e142636f3"
 
 request_header = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36",
@@ -22,51 +22,51 @@ logger = logging.getLogger()
 file_handler = logging.FileHandler(f'data/Tier/report.log')
 logger.addHandler(file_handler)
 
-# DIAMOND
-with open('data/Tier/DIAMOND/I/DIAMOND_I.pkl', 'rb') as f:
-    D1 = pickle.load(f)
-with open('data/Tier/DIAMOND/II/DIAMOND_II.pkl', 'rb') as f:
-    D2 = pickle.load(f)
-with open('data/Tier/DIAMOND/III/DIAMOND_III.pkl', 'rb') as f:
-    D3 = pickle.load(f)
-with open('data/Tier/DIAMOND/IV/DIAMOND_IV.pkl', 'rb') as f:
-    D4 = pickle.load(f)
+# # DIAMOND
+# with open('data/Tier/DIAMOND/I/DIAMOND_I.pkl', 'rb') as f:
+#     D1 = pickle.load(f)
+# with open('data/Tier/DIAMOND/II/DIAMOND_II.pkl', 'rb') as f:
+#     D2 = pickle.load(f)
+# with open('data/Tier/DIAMOND/III/DIAMOND_III.pkl', 'rb') as f:
+#     D3 = pickle.load(f)
+# with open('data/Tier/DIAMOND/IV/DIAMOND_IV.pkl', 'rb') as f:
+#     D4 = pickle.load(f)
 
-# PLATINUM
-with open('data/Tier/PLATINUM/I/PLATINUM_I.pkl', 'rb') as f:
-    P1 = pickle.load(f)
-with open('data/Tier/PLATINUM/II/PLATINUM_II.pkl', 'rb') as f:
-    P2 = pickle.load(f)
-with open('data/Tier/PLATINUM/III/PLATINUM_III.pkl', 'rb') as f:
-    P3 = pickle.load(f)
-with open('data/Tier/PLATINUM/IV/PLATINUM_IV.pkl', 'rb') as f:
-    P4 = pickle.load(f)
+# # PLATINUM
+# with open('data/Tier/PLATINUM/I/PLATINUM_I.pkl', 'rb') as f:
+#     P1 = pickle.load(f)
+# with open('data/Tier/PLATINUM/II/PLATINUM_II.pkl', 'rb') as f:
+#     P2 = pickle.load(f)
+# with open('data/Tier/PLATINUM/III/PLATINUM_III.pkl', 'rb') as f:
+#     P3 = pickle.load(f)
+# with open('data/Tier/PLATINUM/IV/PLATINUM_IV.pkl', 'rb') as f:
+#     P4 = pickle.load(f)
 
-# GOLD
-with open('data/Tier/GOLD/I/GOLD_I.pkl', 'rb') as f:
-    G1 = pickle.load(f)
-with open('data/Tier/GOLD/II/GOLD_II.pkl', 'rb') as f:
-    G2 = pickle.load(f)
-with open('data/Tier/GOLD/III/GOLD_III.pkl', 'rb') as f:
-    G3 = pickle.load(f)
-with open('data/Tier/GOLD/IV/GOLD_IV.pkl', 'rb') as f:
-    G4 = pickle.load(f)
+# # GOLD
+# with open('data/Tier/GOLD/I/GOLD_I.pkl', 'rb') as f:
+#     G1 = pickle.load(f)
+# with open('data/Tier/GOLD/II/GOLD_II.pkl', 'rb') as f:
+#     G2 = pickle.load(f)
+# with open('data/Tier/GOLD/III/GOLD_III.pkl', 'rb') as f:
+#     G3 = pickle.load(f)
+# with open('data/Tier/GOLD/IV/GOLD_IV.pkl', 'rb') as f:
+#     G4 = pickle.load(f)
 
-# SILVER
-with open('data/Tier/SILVER/I/SILVER_I.pkl', 'rb') as f:
-    S1 = pickle.load(f)
-with open('data/Tier/SILVER/II/SILVER_II.pkl', 'rb') as f:
-    S2 = pickle.load(f)
-with open('data/Tier/SILVER/III/SILVER_III.pkl', 'rb') as f:
-    S3 = pickle.load(f)
-with open('data/Tier/SILVER/IV/SILVER_IV.pkl', 'rb') as f:
-    S4 = pickle.load(f)
+# # SILVER
+# with open('data/Tier/SILVER/I/SILVER_I.pkl', 'rb') as f:
+#     S1 = pickle.load(f)
+# with open('data/Tier/SILVER/II/SILVER_II.pkl', 'rb') as f:
+#     S2 = pickle.load(f)
+# with open('data/Tier/SILVER/III/SILVER_III.pkl', 'rb') as f:
+#     S3 = pickle.load(f)
+# with open('data/Tier/SILVER/IV/SILVER_IV.pkl', 'rb') as f:
+#     S4 = pickle.load(f)
 
 # BRONZE
-with open('data/Tier/BRONZE/I/BRONZE_I.pkl', 'rb') as f:
-    B1 = pickle.load(f)
-with open('data/Tier/BRONZE/II/BRONZE_II.pkl', 'rb') as f:
-    B2 = pickle.load(f)
+# with open('data/Tier/BRONZE/I/BRONZE_I.pkl', 'rb') as f:
+#     B1 = pickle.load(f)
+# with open('data/Tier/BRONZE/II/BRONZE_II.pkl', 'rb') as f:
+#     B2 = pickle.load(f)
 with open('data/Tier/BRONZE/III/BRONZE_III.pkl', 'rb') as f:
     B3 = pickle.load(f)
 with open('data/Tier/BRONZE/IV/BRONZE_IV.pkl', 'rb') as f:
@@ -163,19 +163,15 @@ def get_data(dict_match):
 
 
 #################################################################
-tier1 = [G1, S1, B1]        # G1 log
-tier2 = [G2, S2, B2]
-tier3 = [G3, S3, B3]
-tier4 = [G4, S4, B4]
+tier = [B3, B4]        # G1 log
 
-for i in range(4):
-    get_data(tier1[i])
-    get_data(tier2[i])
-    get_data(tier3[i])
-    get_data(tier4[i])
+
+for i in range(2):
+    get_data(tier[i])
+
 
 print("All progress are finished!! Shutdown after 20sec.")
-os.system("shutdown -s -f -t 20")
+os.system("shutdown -s -t 20")
 
 
 
