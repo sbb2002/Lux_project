@@ -2,5 +2,8 @@
 *.json
 *.csv
 
+# but except data csv
+!data_by_rank_v2.csv
+
 # Security
 key.py
