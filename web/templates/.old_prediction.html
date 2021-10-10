@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>This is your winrate...</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript">
+          $(document).ready(function(){
+             $("#header").load("/prediction")
+          });
+    </script>    
+</head>
+<body>
+    <h2>최근 경기 중 최대 20개를 분석하여 해당 경기의 승률을 알려줍니다.</h2>
+    <p>자신의 kda, cs, object, 그리고 나의 팀의 kd을 이용해 승률을 분석합니다.
+        <br>실제 경기의 승패여부와 모델이 예측한 승패여부를 비교해보세요.
+    </p>
+        {% if df_html != None %}
+        <div id='header'></div>
+        {% else %}
+        Error! Your match data are nothing. Please check your match data.
+        {% endif %}
+
+    <form action="/main" method="get">
+    <button>Back</button>
+    </form>
+</body>
+</html>

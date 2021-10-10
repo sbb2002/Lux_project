@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predict your winrate!</title>
+</head>
+<body>
+    <h1>승률 예측기</h1>
+    소환사 이름과 챔피언을 입력하세요.
+    그리고 자주 가는 라인도 선택해보세요!
+    또는 모든 라인에 대해 조사할 수 있습니다만, 그러면 해당 챔프의 모든 라인의 데이터를 토대로 예측합니다.
+    <p>* lane = None(all), TOP, MIDDLE, JUNGLE, BOTTOM, UTILITY</p>
+    <form action="/prediction" method="get">
+        <input type="text" placeholder="summonerName" required name="summonerName" />
+        <input type="text" placeholder="champion" required name="champion" />
+        <select name="lane" id="lane">
+            <option value="None">모든 라인</option>
+            <option value="TOP">탑</option>
+            <option value="JUNGLE">정글</option>
+            <option value="MIDDLE">미드</option>
+            <option value="BOTTOM">원딜</option>
+            <option value="UTILITY">서폿</option>
+        </select>
+        <button>Predict!</button>
+    </form>
+</body>
+</html>

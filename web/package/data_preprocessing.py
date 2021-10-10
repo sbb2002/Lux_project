@@ -1,8 +1,10 @@
 import pandas as pd
+import numpy as np
 import pickle, os
+from sklearn.metrics import precision_recall_curve
 from sklearn.model_selection import cross_val_predict
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, StandardScaler, RobustScaler, MaxAbsScaler
 
 
 df = pd.read_csv(r'D:\\PythonWorkspace\\gitrepo\\data_by_rank_v2.csv', sep=',')
@@ -77,7 +79,9 @@ def dataset(champion, lane=None, tier=None):
                 towers = team_df[3]         # int
                 win = fn_df.iloc[i, 7]      # bool
 
-                dataset.loc[len(dataset)] = [tier, position, kills, deaths, assists, cs, barons, dragons, heralds, towers, win]
+                dataset.loc[len(dataset)] = [tier, position, 
+                                            kills, deaths, assists, cs, 
+                                            barons, dragons, heralds, towers, win]
     
     return dataset
 
@@ -157,21 +161,24 @@ def dataset_v2(champion, lane=None, tier=None):
                 towers = team_df[3]         # int
                 win = fn_df.iloc[i, 7]      # bool
 
-                dataset.loc[len(dataset)] = [tier, position, kills, deaths, assists, cs, barons, dragons, heralds, towers, team_total_kills, team_total_deaths, win]
+                dataset.loc[len(dataset)] = [tier, position, kills, deaths, assists, 
+                                            cs, barons, dragons, heralds, towers, 
+                                            team_total_kills, team_total_deaths, win]
     
     return dataset
 
 
-def tt_split(dataset):
+def tt_split(dataset):      # scaled, but overfitted! Recommand not to scale.
     X_train, X_test, y_train, y_test = \
-        train_test_split(dataset.iloc[:, 2:-1], dataset.iloc[:, -1], train_size=0.8, random_state=42, stratify=dataset.iloc[:, [-1]], shuffle=True)
+        train_test_split(dataset.iloc[:, 2:-1], dataset.iloc[:, -1], 
+                    test_size=0.2, stratify=dataset.iloc[:, [-1]], shuffle=True)
     y_train = y_train.astype('bool')
     y_test = y_test.astype('bool')
-    mm_scaler = MinMaxScaler()
-    mm_scaler.fit(X_train)
-    X_train_scaled = mm_scaler.transform(X_train)
-    X_test_scaled = mm_scaler.transform(X_test)
-    return X_train_scaled, X_test_scaled, y_train, y_test
+    # mm_scaler = MaxAbsScaler()
+    # mm_scaler.fit(X_train)
+    # X_train = mm_scaler.transform(X_train)
+    # X_test = mm_scaler.transform(X_test)
+    return X_train, X_test, y_train, y_test
 
 def set_threshold(estimator, X, y, threshold_eq):
     y_pred = cross_val_predict(estimator, X, y, cv=3, method='decision_function')
@@ -179,10 +186,10 @@ def set_threshold(estimator, X, y, threshold_eq):
     return y_pred
 
 def save_model(filename, estimator):
-    with open(r'D:\PythonWorkspace\gitrepo\Lux_project\model\{}.pkl'.format(filename), 'wb') as f:
+    with open(r'web\pkl\{}.pkl'.format(filename), 'wb') as f:
         pickle.dump(estimator, f)
-    if os.path.exists(r'D:\PythonWorkspace\gitrepo\Lux_project\model\{}.pkl'.format(filename)):
-        print(f"Save a model as {filename}.pkl!\nDir: D:\\PythonWorkspace\\gitrepo\\Lux_project\\model\nModel: {estimator}")
+    if os.path.exists(r'web\pkl\{}.pkl'.format(filename)):
+        print(f"Save a model as {filename}.pkl!\nDir: web\pkl\: {estimator}")
     else:
         print("Cannot save a model...")
 
@@ -322,5 +329,14 @@ def right_counter(estimator, x, y):
 
     right = mcdf['right'].value_counts()
     print(f'Right: {right[1]}/{len(mcdf)}')
-
     return mcdf
+
+def getThresholdOpt(y_train, y_scores):
+    precisions, recalls, thresholds = precision_recall_curve(y_train, y_scores)
+    threshold_eq = thresholds[np.argmin(np.abs(precisions-recalls))]
+    return threshold_eq
+
+
+if __name__ == "__main__":
+    test = dataset_v2("Lux")
+    print(test)

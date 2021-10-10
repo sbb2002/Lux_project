@@ -29,6 +29,8 @@ def plot_pr_vs_threshold(y_train, y_scores):
     plt.plot([np.min(thresholds), threshold_eq], [recall_eq, recall_eq], "r:")
     plt.plot([threshold_eq], [recall_eq], "ro")
     plt.show()
+
+    return threshold_eq
     
 def plot_p_vs_r(y_train, y_scores):
     precisions, recalls, _ = precision_recall_curve(y_train, y_scores)

@@ -1,0 +1,238 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>This is your winrate...</title>  
+</head>
+<body>
+    <h2>최근 경기 중 최대 20개를 분석하여 해당 경기의 승률을 알려줍니다.</h2>
+    <p>자신의 kda, cs, object, 그리고 나의 팀의 kd을 이용해 승률을 분석합니다.
+        <br>실제 경기의 승패여부와 모델이 예측한 승패여부를 비교해보세요.
+    </p>
+    <h3>현재 티어: <b>SILVER</b> </h3>
+    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: center;">
+      <th></th>
+      <th>matchId</th>
+      <th>lane</th>
+      <th>kills</th>
+      <th>deaths</th>
+      <th>assists</th>
+      <th>cs</th>
+      <th>barons</th>
+      <th>dragons</th>
+      <th>heralds</th>
+      <th>towers</th>
+      <th>win</th>
+      <th>prediction</th>
+      <th>win_proba</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>KR_5421818303</td>
+      <td>MIDDLE</td>
+      <td>8</td>
+      <td>4</td>
+      <td>11</td>
+      <td>189</td>
+      <td>1</td>
+      <td>3</td>
+      <td>2</td>
+      <td>10</td>
+      <td>True</td>
+      <td>True</td>
+      <td>99.16%</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>KR_5417350010</td>
+      <td>MIDDLE</td>
+      <td>4</td>
+      <td>8</td>
+      <td>10</td>
+      <td>192</td>
+      <td>0</td>
+      <td>3</td>
+      <td>0</td>
+      <td>6</td>
+      <td>True</td>
+      <td>False</td>
+      <td>46.59%</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>KR_5416631865</td>
+      <td>MIDDLE</td>
+      <td>8</td>
+      <td>2</td>
+      <td>5</td>
+      <td>155</td>
+      <td>0</td>
+      <td>2</td>
+      <td>1</td>
+      <td>10</td>
+      <td>True</td>
+      <td>True</td>
+      <td>99.34%</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>KR_5416478500</td>
+      <td>MIDDLE</td>
+      <td>5</td>
+      <td>4</td>
+      <td>12</td>
+      <td>157</td>
+      <td>1</td>
+      <td>2</td>
+      <td>2</td>
+      <td>11</td>
+      <td>True</td>
+      <td>True</td>
+      <td>99.39%</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>KR_5371918686</td>
+      <td>MIDDLE</td>
+      <td>6</td>
+      <td>0</td>
+      <td>4</td>
+      <td>144</td>
+      <td>0</td>
+      <td>1</td>
+      <td>2</td>
+      <td>11</td>
+      <td>True</td>
+      <td>True</td>
+      <td>99.75%</td>
+    </tr>
+  </tbody>
+</table><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: center;">
+      <th></th>
+      <th>matchId</th>
+      <th>lane</th>
+      <th>kills</th>
+      <th>deaths</th>
+      <th>assists</th>
+      <th>cs</th>
+      <th>barons</th>
+      <th>dragons</th>
+      <th>heralds</th>
+      <th>towers</th>
+      <th>total_kills</th>
+      <th>total_deaths</th>
+      <th>win</th>
+      <th>prediction</th>
+      <th>win_proba</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>KR_5421818303</td>
+      <td>MIDDLE</td>
+      <td>8</td>
+      <td>4</td>
+      <td>11</td>
+      <td>189</td>
+      <td>1</td>
+      <td>3</td>
+      <td>2</td>
+      <td>10</td>
+      <td>47</td>
+      <td>31</td>
+      <td>True</td>
+      <td>True</td>
+      <td>99.56%</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>KR_5417350010</td>
+      <td>MIDDLE</td>
+      <td>4</td>
+      <td>8</td>
+      <td>10</td>
+      <td>192</td>
+      <td>0</td>
+      <td>3</td>
+      <td>0</td>
+      <td>6</td>
+      <td>30</td>
+      <td>31</td>
+      <td>True</td>
+      <td>True</td>
+      <td>85.88%</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>KR_5416631865</td>
+      <td>MIDDLE</td>
+      <td>8</td>
+      <td>2</td>
+      <td>5</td>
+      <td>155</td>
+      <td>0</td>
+      <td>2</td>
+      <td>1</td>
+      <td>10</td>
+      <td>32</td>
+      <td>17</td>
+      <td>True</td>
+      <td>True</td>
+      <td>99.77%</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>KR_5416478500</td>
+      <td>MIDDLE</td>
+      <td>5</td>
+      <td>4</td>
+      <td>12</td>
+      <td>157</td>
+      <td>1</td>
+      <td>2</td>
+      <td>2</td>
+      <td>11</td>
+      <td>44</td>
+      <td>29</td>
+      <td>True</td>
+      <td>True</td>
+      <td>99.74%</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>KR_5371918686</td>
+      <td>MIDDLE</td>
+      <td>6</td>
+      <td>0</td>
+      <td>4</td>
+      <td>144</td>
+      <td>0</td>
+      <td>1</td>
+      <td>2</td>
+      <td>11</td>
+      <td>31</td>
+      <td>7</td>
+      <td>True</td>
+      <td>True</td>
+      <td>99.99%</td>
+    </tr>
+  </tbody>
+</table>
+    <p> * <b>위</b>는 <b>자신의 전적만으로</b> 승률을 예측한 모델의 표입니다. </p>
+    <p> * <b>아래</b>는 나의 전적과 <b>아군 팀의 전체 kill, death까지</b> 포함해 승률을 예측한 모델의 표입니다. </p>
+    <p> * <b>승률 50%에 근접</b>한 박빙의 승부에는 <b>예측이 부정확</b>할 수 있습니다. ^^; </p>
+    <form action="/main" method="get">
+    <button>Back</button>
+    </form>
+</body>
+</html>
